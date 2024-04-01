@@ -1,0 +1,28 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Build & Push
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: login ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ GITHUB_ACTOR }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: docker build
+        run: |
+          docker build \
+          --tag ghcr.io/$GITHUB_ACTOR/luajit-busted:latest \
+          --tag ghcr.io/$GITHUB_ACTOR/luajit-busted:$(echo $GITHUB_SHA | head -c7) \
+          .
+      - name: docker push
+        run: |
+          docker push ghcr.io/$GITHUB_ACTOR/luajit-busted:latest
+          docker push ghcr.io/$GITHUB_ACTOR/luajit-busted:$(echo $GITHUB_SHA | head -c7)
