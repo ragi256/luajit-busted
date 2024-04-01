@@ -3,6 +3,9 @@ on:
     branches:
       - main
 
+permissions:
+  packages: write
+
 name: Build & Push
 
 jobs:
