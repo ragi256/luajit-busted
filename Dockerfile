@@ -1,8 +1,8 @@
-FROM akorn/luarocks:luajit2.1-alpine
+FROM nickblah/luajit:2.1.0-beta3-luarocks-jammy
 
-RUN apk add --no-cache nodejs npm git
-
-RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing dumb-init gcc libc-dev
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get update && \
+    apt-get install -y dumb-init gcc libc-dev nodejs git
 RUN luarocks install busted
 
 RUN busted --version
