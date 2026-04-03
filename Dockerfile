@@ -10,6 +10,7 @@ RUN curl -fsSL https://github.com/LuaJIT/LuaJIT/archive/v2.1.0-beta3.tar.gz | ta
     cd LuaJIT-2.1.0-beta3 && \
     make && make install PREFIX=/usr/local && \
     ln -sf /usr/local/bin/luajit-2.1.0-beta3 /usr/local/bin/luajit && \
+    ln -sf /usr/local/bin/luajit /usr/local/bin/lua && \
     cd .. && rm -rf LuaJIT-2.1.0-beta3 && \
     ldconfig
 
@@ -23,6 +24,9 @@ RUN curl -fsSL https://luarocks.org/releases/luarocks-3.11.1.tar.gz | tar xz && 
 # Install busted via system Lua (avoids LuaJIT 65536 constants limit on manifests)
 # Rocks are installed to /usr/local/lib/luarocks which is shared with LuaJIT
 RUN luarocks install busted
+
+# Patch busted wrapper to use LuaJIT instead of system Lua 5.1
+RUN sed -i "s|'/usr/bin/lua5.1'|'/usr/local/bin/luajit'|" /usr/local/bin/busted
 
 RUN busted --version
 
